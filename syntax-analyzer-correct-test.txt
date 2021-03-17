@@ -1,0 +1,20 @@
+private-entrepreneur prEnt;
+
+prEnt = private-entrepreneur {
+	full-name: "John",
+	address: "Kyiv",
+	phone: "380000000000",
+	RNTRC: 123456789,
+	NACE-code: "12.35",
+	group: 1,
+	tax-system: "general"
+};
+
+private-entrepreneur pr1 = private-entrepreneur {
+	full-name: "Ann"
+};
+
+prEnt.address = "Chernivtsi";
+
+prEnt.add-new-NACE-code("20.22");
+
