@@ -4,7 +4,7 @@ using System.Text;
 
 namespace DSL
 {
-    class Token
+    public class Token
     {
         public TokenType Type { get; }
 
@@ -14,6 +14,11 @@ namespace DSL
         {
             this.Type = type;
             this.Value = value;
+        }
+
+        public Token()
+        {
+
         }
     }
 }

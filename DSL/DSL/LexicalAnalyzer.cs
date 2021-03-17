@@ -6,7 +6,7 @@ using System.Text;
 namespace DSL
 {
 
-    enum TokenType
+    public enum TokenType
     {
         Identifier,
         Delimiter, 
