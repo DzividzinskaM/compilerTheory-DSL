@@ -8,20 +8,24 @@ namespace DSL
     {
         static void Main(string[] args)
         {
-            string correctFilePath = "./../../../../../syntax-analyzer-correct-test.txt";
-            string incorrectFilePath = "./../../../../../syntax-analyzer-incorrect-test.txt";
+            string correctFilePath = "./../../../../../semantic-analyzer-correct-test.txt";
+            string incorrectFilePath1 = "./../../../../../semantic-analyzer-incorrect-test1.txt";
+            string incorrectFilePath2 = "./../../../../../semantic-analyzer-incorrect-test2.txt";
 
 
             Console.WriteLine("------------------Analyze correct program code------------------");
             Analyze(correctFilePath);
 
 
-            Console.WriteLine("------------------Analyze incorrect program code------------------");
-            Analyze(incorrectFilePath);
+            Console.WriteLine("------------------Analyze incorrect program code 1------------------");
+            Analyze(incorrectFilePath1);
+
+            Console.WriteLine("------------------Analyze incorrect program code 2------------------");
+            Analyze(incorrectFilePath2);
 
             /*string correctFilePath = "./../../../../../syntax-analyzer-correct-test.txt";
             Analyze(correctFilePath);*/
-            
+
 
 
         }
@@ -60,6 +64,20 @@ namespace DSL
             {
                 showErrorMsg(exception.Message);
             }
+
+            SemanticAnalyzer semanticAnalyzer = new SemanticAnalyzer(syntaxAnalyzer.Expressions);
+            try
+            {
+                semanticAnalyzer.Analyze();
+                Console.WriteLine("Correct");
+            }
+            catch (Exception exception)
+            {
+                showErrorMsg(exception.Message);
+            }
+
+
+
         }
 
         private static void showErrorMsg(string errorMsg)
