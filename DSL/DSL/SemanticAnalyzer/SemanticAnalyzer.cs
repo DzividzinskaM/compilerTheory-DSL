@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace DSL
 {
@@ -249,7 +250,160 @@ namespace DSL
 
         private void checkCorrectValueForType(string dataType, string value)
         {
-            int a = 10;
+            bool flag = true;
+            if (dataType == DataTypes.FULL_NAME_DT)
+                flag = isCorrectFullName(value);
+            else if (dataType == DataTypes.PHONE_DT)
+                flag = isCorrectPhone(value);
+            else if (dataType == DataTypes.RNTRC_DT)
+                flag = isCorrectRNTRC(value);
+            else if (dataType == DataTypes.GROUP_DT)
+                flag = isCorrectGroup(value);
+            else if (dataType == DataTypes.TAX_SYSTEM_DT)
+                flag = isCorrectTaxSystem(value);
+            else if (dataType == DataTypes.NACE_CODE_DT)
+                flag = isCorrectNaceCode(value);
+            else if (dataType == DataTypes.TYPE_ONE_TAX_PAYER_DT)
+                flag = isCorrectTypeOneTaxPayer(value);
+            else if (dataType == DataTypes.SFS_CODE_DT)
+                flag = isCorrectSfsCode(value);
+            else if (dataType == DataTypes.YEAR_DT)
+                flag = isNumberInRange(value, 0, 9999);
+            else if (dataType == DataTypes.QUARTER_DT)
+                flag = isNumberInRange(value, 1, 4);
+            else if (dataType == DataTypes.MONTH_DT)
+                flag = isNumberInRange(value, 1, 12);
+            else if (dataType == DataTypes.INCOME_DT || dataType == DataTypes.SPECIFIED_AMOUNT_DT
+                || dataType == DataTypes.INCOME_DECLARED_DT || dataType == DataTypes.INCOME_AMOUNT_DT
+                || dataType == DataTypes.INCOME_ACCURED_DT || dataType == DataTypes.INCOME_PAID_DT)
+                flag = isMoneyValue(value);
+            else if (dataType == DataTypes.SUBMISSION_DATE_DT || dataType == DataTypes.START_DATE_DT
+                || dataType == DataTypes.LAST_DATE_DT || dataType == DataTypes.DATE_ADOPT_DT
+                || dataType == DataTypes.DATE_DISMISS_DT)
+                flag = isDateValue(value);
+            else if (dataType == DataTypes.TYPE_UNIFIED_SOCIAL_TAX_DT)
+                flag = isCorrectTypeUnSocTax(value);
+            else if (dataType == DataTypes.TYPE_1_DF_DT)
+                flag = isCorrectTypeDF1(value);
+            else if (dataType == DataTypes.EMPLOYEE_BY_CIVIL_CONRACT_DT || dataType == DataTypes.EMPLOYEE_BY_EMPLOYMENT_CONRACT_DT)
+                flag = isPositiveNum(value);
+            else if (dataType == DataTypes.EMPLOYEE_ITN_DT)
+                flag = isCorrectRNTRC(value);
+            else if (dataType == DataTypes.INCOME_SIGN_DT)
+                flag = isCorrectIncomeSign(value);
+            else if (dataType == DataTypes.SIGN_DT)
+                flag = isNumberInRange(value, 0, 1);
+            else if (dataType == DataTypes.NUMBER_DT)
+                flag = isPositiveNum(value);
+
+            if (!flag)
+                throw new Exception($"Incorrect value {value} for {dataType} data type");
+        }
+
+
+        private bool isCorrectIncomeSign(string value)
+        {
+            string pattern = @"\d{3}";
+            return Regex.IsMatch(value, pattern);
+        }
+
+        private bool isPositiveNum(string value)
+        {
+            if (!Int32.TryParse(value, out int res) || res < 0)
+                return false;
+            return true;
+        }
+
+        private bool isCorrectTypeDF1(string value)
+        {
+            List<string> types = new List<string>() { "\"reporting\"", "\"reporting-new\"", "\"clarifying\"" };
+            return isLstContain(value, types);
+        }
+
+        private bool isCorrectTypeUnSocTax(string value)
+        {
+            List<string> types = new List<string>() { "\"initial\"", "\"liquidation\"", "\"pension\"" };
+            return isLstContain(value, types);
+        }
+
+        private bool isDateValue(string value)
+        {
+            return DateTime.TryParse(value, out DateTime res);
+        }
+
+        private bool isMoneyValue(string value)
+        {
+            return decimal.TryParse(value, out decimal res);
+        }
+
+        private bool isNumberInRange(string value, int start, int end)
+        {
+            if (value.Length == 0 || !Int32.TryParse(value, out int res) || res < start || res > end)
+                return false;
+            return true;
+        }
+
+        private bool isCorrectSfsCode(string value)
+        {
+            string SFSCodePattern = @"\d{4}";
+            return Regex.IsMatch(value, SFSCodePattern);
+        }
+
+        private bool isCorrectTypeOneTaxPayer(string value)
+        {
+            List<string> types = new List<string>() { "\"reporting\"", "\"reporting-new\"", "\"clarifying\"", "\"additional\"" };
+            return isLstContain(value, types);
+        }
+
+        private bool isCorrectNaceCode(string value)
+        {
+            string NaceCodePattern = @"\d{2}.\d{2}";
+            return Regex.IsMatch(value, NaceCodePattern);
+        }
+
+        private bool isCorrectTaxSystem(string value)
+        {
+            List<string> taxSystems = new  List<string>() { "\"simple\"", "\"general\""};
+            return isLstContain(value, taxSystems);
+        }
+
+        private bool isCorrectGroup(string value)
+        {
+            string groupPattern = @"[1-4]{1}";
+            if(value.Length != 1 || !Regex.IsMatch(value, groupPattern))
+                return false;
+            return true;
+        }
+
+        private bool isCorrectRNTRC(string value)
+        {
+            string RNTRCpattern1 = @"\d{10}";
+            string RNTRCpattern2 = @"\d{9}";
+            string RNTRCpattern3 = @"\w\w\d{6}";
+            if (!Regex.IsMatch(value, RNTRCpattern1) && !Regex.IsMatch(value, RNTRCpattern2)
+                && !Regex.IsMatch(value, RNTRCpattern3))
+                return false;
+            return true;
+        }
+
+        private bool isCorrectPhone(string value)
+        {
+            return true;
+        }
+
+        private bool isCorrectFullName(string value)
+        {
+            if (!isStrContainsOnlyLetter(value.Substring(1, value.Length-2)))
+                return false;
+            return true;
+        }
+
+        private bool isStrContainsOnlyLetter(string value)
+        {
+            foreach (var sym in value)
+                if (!Char.IsLetter(sym))
+                    return false;
+            return true;
         }
     }
 }
