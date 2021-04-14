@@ -1,0 +1,30 @@
+private-entrepreneur prEnt;
+
+prEnt = private-entrepreneur {
+	full-name: "Іванов Іван Іванович",
+	address: "Київ",
+	phone: "380000000000",
+	RNTRC: 12345678901,
+	NACE-code: "12.35",
+	group: 1,
+	tax-system: "general"
+};
+
+private-entrepreneur pr1 = private-entrepreneur {
+	full-name: "Анна"
+};
+
+prEnt.address = "Чернівці";
+
+prEnt.add-new-NACE-code("20.22");
+
+one-tax-payer-report report1 = one-tax-payer-report {
+	private-entrepreneur: prEnt,
+	type-one-tax-payer: "reporting",
+	SFS-code: 1234,
+	year: 2020,
+	income: 10000,
+	submission-date: 10.01.2020
+};
+
+report1.show();

@@ -8,7 +8,7 @@ namespace DSL
     {
         static void Main(string[] args)
         {
-            string correctFilePath = "./../../../../../semantic-analyzer-correct-test.txt";
+            /*string correctFilePath = "./../../../../../semantic-analyzer-correct-test.txt";
             string incorrectFilePath1 = "./../../../../../semantic-analyzer-incorrect-test1.txt";
             string incorrectFilePath2 = "./../../../../../semantic-analyzer-incorrect-test2.txt";
 
@@ -21,11 +21,14 @@ namespace DSL
             Analyze(incorrectFilePath1);
 
             Console.WriteLine("------------------Analyze incorrect program code 2------------------");
-            Analyze(incorrectFilePath2);
+            Analyze(incorrectFilePath2);*/
 
             /*string correctFilePath = "./../../../../../syntax-analyzer-correct-test.txt";
             Analyze(correctFilePath);*/
 
+
+            string path = "./../../../../../translator-test.txt";
+            Analyze(path);
 
 
         }
@@ -76,7 +79,20 @@ namespace DSL
                 showErrorMsg(exception.Message);
             }
 
-
+            Translator translator = new Translator(syntaxAnalyzer.Expressions);
+            Console.WriteLine("Start...");
+            translator.Translate();
+            Console.WriteLine("Finish...");
+            /*try
+            {
+                Console.WriteLine("Start...");
+                translator.Translate();
+                Console.WriteLine("Finish...");
+            }
+            catch (Exception exception)
+            {
+                showErrorMsg(exception.Message);
+            }*/
 
         }
 
