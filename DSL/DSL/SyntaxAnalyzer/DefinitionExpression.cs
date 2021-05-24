@@ -9,12 +9,11 @@ namespace DSL
         public string keyWord { get; set; }
 
         public string identifier { get; set; }
+        public string str { get; set; }
 
         public DefinitionExpression()
         {
             type = ExpressionType.Definition;
         }
-
-        
     }
 }

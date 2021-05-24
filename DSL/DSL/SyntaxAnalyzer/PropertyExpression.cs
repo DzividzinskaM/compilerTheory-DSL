@@ -10,6 +10,7 @@ namespace DSL
 
         public string keyWord { get; set; }
 
+
         public PropertyExpression()
         {
             type = ExpressionType.Property;

@@ -4,7 +4,6 @@ using System.Text;
 
 namespace DSL
 { 
-
     public enum ExpressionType
     {
         Expression,
@@ -19,6 +18,7 @@ namespace DSL
     public abstract class AbstractExpression
     {
         public ExpressionType type { get; set; }
+        public int Line { get; set; }
 
     }
 }

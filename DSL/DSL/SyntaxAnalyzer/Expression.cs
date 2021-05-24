@@ -13,6 +13,8 @@ namespace DSL
 
         public string Identifier { get; set; }
 
+        public string Str { get; set; }
+
         public Expression()
         {
             definitionExpressions = new List<DefinitionExpression>();

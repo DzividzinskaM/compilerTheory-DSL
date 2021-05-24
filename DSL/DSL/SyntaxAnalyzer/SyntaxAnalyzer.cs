@@ -80,10 +80,10 @@ namespace DSL
             OperationExpression expression = new OperationExpression();
 
             if (currentTokens[0].Type != TokenType.Identifier)
-                throw new Exception("Need an identifier for calling method");
+                throw new Exception($"Line {currentTokens[0].Line}: Need an identifier for calling method");
             expression.identifier = currentTokens[0].Value;
             if (currentTokens[2].Type != TokenType.Operand)
-                throw new Exception("Incorrect type of method");
+                throw new Exception($"Line {currentTokens[2].Line}: Incorrect type of method");
             expression.methodName = currentTokens[2].Value;
 
             int startIndex = -1;
@@ -98,12 +98,12 @@ namespace DSL
             }
 
             if (startIndex != -1 && lastIndex == -1)
-                throw new Exception("Need a pair of '('");
+                throw new Exception($"Line {currentTokens[0].Line}: Need a pair of '('");
 
 
             expression.attributes = parseAttributes(currentTokens.GetRange(startIndex +1, lastIndex-startIndex));
-            
 
+            expression.Line = currentTokens[0].Line;
             return expression;
         }
 
@@ -143,6 +143,7 @@ namespace DSL
 
             expression.expression = (Expression)parseExpression(right);
 
+            expression.Line = currentTokens[0].Line;
             return expression;           
         }
 
@@ -153,13 +154,14 @@ namespace DSL
             if (currentTokens[0].Type == TokenType.KeyWord)
                 expression.keyWord = currentTokens[0].Value;
             else
-                throw new Exception("When initialize variables start with type of data");
+                throw new Exception($"Line {currentTokens[0].Line}: When initialize variables start with type of data");
 
             if (currentTokens[1].Type == TokenType.Identifier)
                 expression.identifier = currentTokens[1].Value;
             else
-                throw new Exception("Incorrect identifier");
+                throw new Exception($"Line {currentTokens[1].Line}: Incorrect identifier");
 
+            expression.Line = currentTokens[0].Line;
             return expression;
 
         }
@@ -172,7 +174,8 @@ namespace DSL
 
             List<Token> right = getRightExpression(currentTokens, ref expression, index);
                 new List<Token>();
-            
+
+            expression.Line = currentTokens[0].Line;
             return expression;
            
         }
@@ -187,6 +190,7 @@ namespace DSL
             }
             expression.Right = (Expression)parseExpression(right);
 
+            expression.Line = currentTokens[0].Line;
             return right;
 
         }
@@ -201,11 +205,17 @@ namespace DSL
             }
 
             if (left.Count == 1 && left[0].Type == TokenType.Identifier)
+            {
+                expression.Line = currentTokens[0].Line;
                 expression.identifier = left[0].Value;
+            }
+               
             else if (left[1].Value == ".")
+            {
                 expression.propertiesExpression = parsePropertyExpression(left);
+            }
             else
-                throw new Exception("Left part of assignment expression isn't correct");
+                throw new Exception($"Line {left[1].Line}: Left part of assignment expression isn't correct");
 
             return left;
         }
@@ -214,7 +224,11 @@ namespace DSL
         {
             Expression expression = new Expression();
 
-
+            if(currentTokens.Count == 1 && currentTokens[0].Type ==TokenType.String)
+            {
+                expression.Str = currentTokens[0].Value;
+                return expression;
+            }
            
             if (currentTokens.Count == 3 && currentTokens[1].Type == TokenType.Identifier)
             {
@@ -243,12 +257,12 @@ namespace DSL
             else if(startIndex !=-1)
             {
                 if (lastIndex == -1)
-                    throw new Exception("Must be a pair for '}'");
+                    throw new Exception($"Line {currentTokens[0].Line}: Must be a pair for curly brackets");
 
                 if (currentTokens[0].Type == TokenType.KeyWord)
                     expression.keyWord = currentTokens[0].Value;
                 else
-                    throw new Exception("Expression must contains data type");
+                    throw new Exception($"Line {currentTokens[0].Line}: Expression must contains data type");
 
                 expression.definitionExpressions = new List<DefinitionExpression>();
                 startIndex++;
@@ -258,6 +272,7 @@ namespace DSL
                 {
                     if(currentTokens[i+1].Value == "," || currentTokens[i+1].Value == "}")
                     {
+                        expression.Line = currentTokens[0].Line;
                         expression.definitionExpressions.Add(parseDefinitionExpression(currentTokens.GetRange(index, i - index+1)));
                         index = i + 2;
                     }
@@ -277,22 +292,37 @@ namespace DSL
             if (currentTokens[0].Type == TokenType.KeyWord)
                 expression.keyWord = currentTokens[0].Value;
             else
-                throw new Exception("Left part of definition expression must be a key word");
+                throw new Exception($"Line {currentTokens[0].Line}: Left part of definition expression must be a key word");
 
            
             string identifierValue = "";
             for(int i=2; i < currentTokens.Count; i++)
             {
                 Token token = currentTokens[i];
+                if(token.Type == TokenType.String)
+                {
+                    expression.str = token.Value;
+                    break;
+                }
                 if (token.Type == TokenType.Delimiter || token.Type == TokenType.Identifier || token.Type == TokenType.Number)
-                    identifierValue += currentTokens[i].Value;
+                    identifierValue += token.Value;
                 else
-                    throw new Exception("Incorrect type in right part of definition expression");
+                    throw new Exception($"Line {token.Line}: Incorrect type in right part of definition expression");
             }
 
+            if(Int32.TryParse(identifierValue, out int res))
+            {
+                expression.str = identifierValue;
+                identifierValue = "";
+            }
 
-            expression.identifier = identifierValue;
+            expression.Line = currentTokens[0].Line;
+            if (identifierValue != "")
+            {
+                expression.identifier = identifierValue;
+            }
             return expression;
+          
         }
 
         private PropertyExpression parsePropertyExpression(List<Token> left)
@@ -302,13 +332,14 @@ namespace DSL
                 expression.identifier = left[0].Value;
             else
             {
-                throw new Exception("In property value first parameter must be identifier");
+                throw new Exception($"Line {left[0].Line}: In property value first parameter must be identifier");
             }
             if (left[2].Type == TokenType.KeyWord)
                 expression.keyWord = left[2].Value;
             else
-                throw new Exception("In property value second parameter must be key word");
+                throw new Exception($"Line {left[2].Line}: In property value second parameter must be key word");
 
+            expression.Line = left[0].Line;
             return expression;
 
         }
