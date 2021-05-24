@@ -6,6 +6,7 @@ namespace DSL
 { 
     public class Form1DFSection1Unit : IType
     {
+        public int num { get; set; }
         public string IDName { get; set; }
         public string EmpItn { get; set; }
         public decimal IncomeAccured { get; set; }
@@ -38,10 +39,10 @@ namespace DSL
                     IncomeSign = decimal.Parse(value);
                     break;
                 case DataTypes.DATE_ADOPT_DT:
-                    DateAdopt = DateTime.Parse(value);
+                    DateAdopt = SpecialParsing.parserDate(value);
                     break;
                 case DataTypes.DATE_DISMISS_DT:
-                    DateDismiss = DateTime.Parse(value);
+                    DateDismiss = SpecialParsing.parserDate(value);
                     break;
                 case DataTypes.SIGN_DT:
                     Sign = int.Parse(value);

@@ -16,10 +16,10 @@ namespace DSL
 
         public void Show()
         {
-
+            //open docs
         }
 
-        public void Save()
+        public void Save(string path)
         {
 
         }
@@ -33,7 +33,7 @@ namespace DSL
                     Show();
                     break;
                 case DataTypes.SAVE_METHOD:
-                    Save();
+                    Save(attributes[0]);
                     break;
             }
         }
@@ -51,17 +51,30 @@ namespace DSL
                     SFSCode = value;
                     break;
                 case DataTypes.START_DATE_DT:
-                    Start = DateTime.Parse(value);
+                    Start = SpecialParsing.parserDate(value);
                     break;
                 case DataTypes.LAST_DATE_DT:
-                    Last = DateTime.Parse(value);
+                    Last = SpecialParsing.parserDate(value);
                     break;
                 case DataTypes.SUBMISSION_DATE_DT:
-                    SubmissionDate = DateTime.Parse(value);
+                    SubmissionDate = SpecialParsing.parserDate(value);
                     break;
 
             }
 
+        }
+
+        internal UnifiedSocialTaxReport Clone()
+        {
+            return new UnifiedSocialTaxReport
+            {
+                privateEnterprenuer = this.privateEnterprenuer,
+                Type = this.Type,
+                SFSCode = this.SFSCode,
+                Start = this.Start,
+                Last = this.Last,
+                SubmissionDate = this.SubmissionDate
+            };
         }
     }
 }

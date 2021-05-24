@@ -17,12 +17,12 @@ namespace DSL
 
         public void Show()
         {
-
+            //open docs
         }
 
-        public void Save()
+        public void Save(string path)
         {
-
+            //save docs
         }
 
 
@@ -34,7 +34,7 @@ namespace DSL
                     Show();
                     break;
                 case DataTypes.SAVE_METHOD:
-                    Save();
+                    Save(attributes[0]);
                     break;
             }
         }
@@ -44,7 +44,7 @@ namespace DSL
             switch (prop)
             {
                 case DataTypes.PRIVATE_ENTERPRENUER_DT:
-                    PrivateEnterprenuer = (PrivateEnterprenuer) instance;
+                    PrivateEnterprenuer = (PrivateEnterprenuer)instance;
                     break;
                 case DataTypes.TYPE_1_DF_DT:
                     Type = value;
@@ -66,6 +66,20 @@ namespace DSL
                     break;
 
             }
+        }
+
+        public Form1DF Clone()
+        {
+            return new Form1DF
+            {
+                PrivateEnterprenuer = this.PrivateEnterprenuer,
+                Type = this.Type,
+                Quarter = this.Quarter,
+                Year = this.Year,
+                EmployeeByCivivlContract = this.EmployeeByCivivlContract,
+                EmployeeByEmplContract = this.EmployeeByEmplContract,
+                Section1 = this.Section1
+            };
         }
     }
 }

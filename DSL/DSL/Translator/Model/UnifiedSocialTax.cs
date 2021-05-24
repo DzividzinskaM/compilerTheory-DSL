@@ -14,7 +14,7 @@ namespace DSL
 
         public void CallMethod(string methodName, List<string> attributes)
         {
-            return;
+            
         }
 
         public void SetValue(string prop, string value = null, IType instance = null)
@@ -31,6 +31,17 @@ namespace DSL
                     IncomeAmount = decimal.Parse(value);
                     break;
             }
+        }
+
+        internal UnifiedSocialTax Clone()
+        {
+            return new UnifiedSocialTax
+            {
+                Month = this.Month,
+                IncomeDeclared = this.IncomeDeclared,
+                IncomeAmount = this.IncomeAmount,
+                unifiedSocialTaxes = this.unifiedSocialTaxes
+            };
         }
     }
 }

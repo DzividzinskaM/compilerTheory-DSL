@@ -61,9 +61,12 @@ namespace DSL
             try
             {
                 syntaxAnalyzer.Analyze();
+                Optimizator optimizator = new Optimizator(syntaxAnalyzer.Expressions);
+                optimizator.Optimize();
+                syntaxAnalyzer.Expressions = optimizator.exprList;
                 showExpressions(syntaxAnalyzer.Expressions);
             }
-            catch(Exception exception)
+            catch (Exception exception)
             {
                 showErrorMsg(exception.Message);
             }
@@ -112,6 +115,7 @@ namespace DSL
                     Console.WriteLine($"type: {expression.type}");
                     AssignmentExpression assignmentExpression = (AssignmentExpression)expression;
                     Console.WriteLine("left: ");
+                    if(assignmentExpression.identifier != null)
                     if(assignmentExpression.identifier != null)
                         Console.WriteLine($"\tidentifier: {assignmentExpression.identifier}");
                     else if(assignmentExpression.propertiesExpression != null)
@@ -162,6 +166,8 @@ namespace DSL
             Console.WriteLine($"\ttype: {right.type}");
             if (right.Identifier != null)
                 Console.WriteLine($"\tidentifier: {right.Identifier}");
+            else if (right.Str != null)
+                Console.WriteLine($"\tstring: {right.Str}");
             else
             {
                 Console.WriteLine($"\tkeyWord: {right.keyWord}");
@@ -169,8 +175,10 @@ namespace DSL
                 {
                     Console.WriteLine($"\t\ttype: {def.type}");
                     Console.WriteLine($"\t\tkeyWord: {def.keyWord}");
-                    Console.WriteLine($"\t\tidentifier: {def.identifier}");
-
+                    if(def.identifier != null)
+                        Console.WriteLine($"\t\tidentifier: {def.identifier}");
+                    if(def.str != null)
+                        Console.WriteLine($"\t\tidentifier: {def.str}");
                 }
             }
         }
@@ -192,8 +200,6 @@ namespace DSL
             }
 
         }
-
-       
 
     }
 }

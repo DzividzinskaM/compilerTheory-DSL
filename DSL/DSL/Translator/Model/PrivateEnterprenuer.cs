@@ -31,6 +31,8 @@ namespace DSL
 
         public void SetValue(string prop, string value = null, IType instance = null)
         {
+            if (value == null && instance == null)
+                return;
             switch (prop)
             {
                 case DataTypes.FULL_NAME_DT:
@@ -71,6 +73,21 @@ namespace DSL
                     SetMainNaceCode(attributes[0]);
                     break;
             }
+        }
+
+        public PrivateEnterprenuer Clone()
+        {
+            return new PrivateEnterprenuer
+            {
+                FullName = this.FullName,
+                Address = this.Address,
+                Phone = this.Phone,
+                RNTRC = this.RNTRC,
+                Group = this.Group,
+                TaxSystem = this.TaxSystem,
+                NaceCodes = this.NaceCodes,
+                MainNaceCode = this.MainNaceCode
+            };
         }
     }
 }

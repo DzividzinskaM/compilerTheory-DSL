@@ -8,7 +8,8 @@ namespace DSL
     {
         public string IDName { get; set; }
 
-        public void SetValue(string prop, string value = null, IType instance= null);
+        public void SetValue(string prop, string value = null, IType instance = null);
         public void CallMethod(string methodName, List<string> attributes);
+
     }
 }

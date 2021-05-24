@@ -87,25 +87,27 @@ namespace DSL
             var wordApp = new Word.Application();
             wordApp.Visible = false;
 
-        /*    var wordDoc = wordApp.
+            var wordDoc = wordApp.Documents.Open(path);
             replace(DataTypes.TYPE_ONE_TAX_PAYER_DT, "звітна", wordDoc);
             replace(DataTypes.YEAR_DT, Year.ToString(), wordDoc);
 
             wordDoc.SaveAs(ResPath);
-            wordApp.Visible = true;*/
+            wordApp.Visible = true;
 
 
         }
 
-        /*private void replace(string tmp, string value, Word.Document wordDoc)
+        private void replace(string tmp, string value, Word.Document wordDoc)
         {
             var range = wordDoc.Content;
             range.Find.ClearFormatting();
             range.Find.Execute(FindText: tmp, ReplaceWith: value);
-        }*/
+        }
 
         public void SetValue(string prop, string value = null, IType instance = null)
         {
+            if (value == null && instance == null)
+                return;
             switch(prop)
             {
                 case DataTypes.PRIVATE_ENTERPRENUER_DT:
@@ -134,11 +136,12 @@ namespace DSL
                     SpecifiedAmount = decimal.Parse(value);
                     break;
                 case DataTypes.SUBMISSION_DATE_DT:
-                    SubmissionDate = DateTime.Parse(value);
+                    SubmissionDate = SpecialParsing.parserDate(value);
                     break;
                 default: return;
             }
         }
+
 
         public void CallMethod(string methodName, List<string> attributes)
         {
@@ -158,6 +161,19 @@ namespace DSL
                     break;
                 default: return;
             }
+        }
+
+        internal OneTaxPayer Clone()
+        {
+            return new OneTaxPayer { 
+                SFSCode = this.SFSCode, 
+                Type = this.Type, 
+                Year = this.Year, 
+                Quarter = this.Quarter, 
+                Income = this.Income,
+                SpecifiedAmount = this.SpecifiedAmount,
+                SubmissionDate = this.SubmissionDate
+            };
         }
     }
 }
