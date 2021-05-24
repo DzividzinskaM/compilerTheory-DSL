@@ -12,13 +12,14 @@ namespace DSL
         Delimiter, 
         KeyWord,
         Number,
-        Operand
+        Operand,
+        String
 
     }
 
     class LexicalAnalyzer
     {
-        private enum States { START, NUM, DLM, END, ID, ERROR }
+        private enum States { START, NUM, DLM, END, ID, ERROR, STR }
 
         private string _currentToken = "";
         private char _currentSymbol;
@@ -71,7 +72,7 @@ namespace DSL
 
         private void AddNewToken(TokenType type)
         {
-            Token token = new Token(type, _currentToken);
+            Token token = new Token(type, _currentToken, _lineNumber);
             Tokens.Enqueue(token);
         }
 
@@ -87,15 +88,44 @@ namespace DSL
 
         private int count = 0;
 
+        private int _lineNumber = 0;
+        private int _currentLineLength = 0;
+        private int _currentLengthCount = 0;
+        private string _currLine;
+
         private void GetNext()
         {
-            char[] currentLocal = new char[1];
+            //char[] currentLocal = new char[1];
             if (count == _text.Length)
                 _state = States.END;
             else
-                _sr.Read(currentLocal, 0, 1);
-            count++;
-           _currentSymbol = currentLocal[0];
+            {    
+                if(_currentLineLength == _currentLengthCount)
+                {
+                    _currLine = "";
+                    while (_currLine == "")
+                    {
+                        _currLine = _sr.ReadLine();
+                        _lineNumber++;
+                        if (_currLine == null)
+                        {
+                            _state = States.END;
+                            return;
+                        }
+                    }
+                    _currentLineLength = _currLine.Length;
+                    if(_currLine == null)
+                    {
+                        _state = States.END;
+                        return;
+                    }
+                    _currentLengthCount = 0;
+                    
+                }
+
+                _currentSymbol = _currLine[_currentLengthCount];
+                _currentLengthCount++;               
+            }
            
 
         }
@@ -103,9 +133,10 @@ namespace DSL
 
         public bool Analyze()
         {
-            
+
             _state = States.START;
             GetNext();
+            char quotes = new char();
 
             while (true)
             {
@@ -116,9 +147,15 @@ namespace DSL
                         if (_currentSymbol == ' ' || _currentSymbol == '\n' || _currentSymbol == '\t'
                             || _currentSymbol == '\0' || _currentSymbol == '\r')
                             GetNext();
+                        else if (isSingleQuotes(_currentSymbol) || isDoubleQuotes(_currentSymbol))
+                        {
+                            quotes = _currentSymbol;
+                            AddToCurrentToken();
+                            _state = States.STR;
+                            GetNext();
+                        }
                         else if (char.IsLetter(_currentSymbol))
                         {
-                           
                             AddToCurrentToken();
                             _state = States.ID;
                             GetNext();
@@ -159,6 +196,41 @@ namespace DSL
                                 }
                             }
                             _state = States.START;
+
+                        }
+                        break;
+                    case States.STR:
+                        if (char.IsLetterOrDigit(_currentSymbol) || _currentSymbol == '-' || _currentSymbol == '.'
+                            || _currentSymbol == ' ')
+                        {
+                            AddToCurrentToken();
+                            GetNext();
+                        }
+                        else if (isSingleQuotes(_currentSymbol) || isDoubleQuotes(_currentSymbol))
+                        {
+                            bool firstIsDoubleQ = isDoubleQuotes(quotes);
+                            bool lastIsDoubleQ = isDoubleQuotes(_currentSymbol);
+                            bool firstIsSingleQ = isSingleQuotes(quotes);
+                            bool lastIsSingleQ = isSingleQuotes(_currentSymbol);
+                            if ((firstIsDoubleQ && lastIsDoubleQ)
+                                || (firstIsSingleQ && lastIsSingleQ))
+                            {
+                                AddToCurrentToken();
+                                AddNewToken(TokenType.String);
+                                _state = States.START;
+                                quotes = new char();
+                            }
+                            else
+                            {
+                                _state = States.ERROR;
+                                ErrorMsg = "First and last quotes are different";
+                            }
+                            GetNext();
+                        }
+                        else
+                        {
+                            _state = States.ERROR;
+                            ErrorMsg = "You missed quotes";
                         }
                         break;
                     case States.NUM:
@@ -190,6 +262,7 @@ namespace DSL
                     case States.ERROR:
                         if (ErrorMsg.Length == 0)
                             ErrorMsg = "Something isn't correct";
+                        ErrorMsg = $"Line { _lineNumber}: " + ErrorMsg;
                         _state = States.END;
                         break;
                     case States.END:
@@ -200,6 +273,16 @@ namespace DSL
 
             }
 
+        }
+
+        private bool isSingleQuotes(char sym)
+        {
+            return sym == '\'';
+        }
+
+        private bool isDoubleQuotes(char sym)
+        {
+            return sym == '\"';
         }
 
     }

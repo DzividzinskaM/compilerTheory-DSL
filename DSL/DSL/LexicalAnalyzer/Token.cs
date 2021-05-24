@@ -10,10 +10,13 @@ namespace DSL
 
         public string Value { get; }
 
-        public Token(TokenType type, string value)
+        public int Line { get; set; }
+
+        public Token(TokenType type, string value, int line)
         {
             this.Type = type;
             this.Value = value;
+            this.Line = line;
         }
 
         public Token()
