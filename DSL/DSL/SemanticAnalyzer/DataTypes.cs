@@ -54,9 +54,8 @@ namespace DSL
         public const string ADD_MONTH_DATA_METHOD = "add-month-data";
         public const string ADD_NEW_RECORD_METHOD = "add-new-record";
         public const string DELETE_RECORD_METHOD = "delete-record";
-        public const string CLARIFY_ADD_NEW_RECORD_METHOD = "clarify-add-new-record";
-        public const string CLARIFY_DELETE_RECORD_METHOD = "clarify-delete-record";
         public const string NUMBER_DT = "number";
+        public const string STR = "";
 
         public List<string> PropsForPrEnt = new List<string>{FULL_NAME_DT, ADDRESS_DT, PHONE_DT,
             RNTRC_DT, NACE_CODE_DT, GROUP_DT, TAX_SYSTEM_DT};
@@ -77,15 +76,14 @@ namespace DSL
         public List<string> MethodsForUnifiedSocialTaxReport = new List<string> { NEW_METHOD, SHOW_METHOD, SAVE_METHOD };
         public List<string> MethodsForT1UnSocTax = new List<string> { NEW_METHOD, ADD_MONTH_DATA_METHOD };
         public List<string> MethodsFor1DFReport = new List<string> { NEW_METHOD, SHOW_METHOD, SAVE_METHOD };
-        public List<string> MethodsForSection1DF1 = new List<string> { ADD_NEW_RECORD_METHOD, DELETE_RECORD_METHOD,
-            CLARIFY_ADD_NEW_RECORD_METHOD, CLARIFY_DELETE_RECORD_METHOD};
+        public List<string> MethodsForSection1DF1 = new List<string> { ADD_NEW_RECORD_METHOD, DELETE_RECORD_METHOD };
 
         public List<string> AttrsForAddNewNaceCode = new List<string> { NACE_CODE_DT };
         public List<string> AttrsForSetMainNaceCode = new List<string> { NACE_CODE_DT };
         public List<string> AttrsForChangeSingleTaxPercent = new List<string> { NUMBER_DT };
         public List<string> AttrsForClarify = new List<string> { SPECIFIED_AMOUNT_DT };
         public List<string> AttrsForShow = new List<string>();
-        public List<string> AttrsForSave = new List<string>();
+        public List<string> AttrsForSave = new List<string> { STR };
         public List<string> AttrsForAddMonthData = new List<string> { MONTH_DT, INCOME_DECLARED_DT, INCOME_AMOUNT_DT };
         public List<string> AttrsForAddNewRecord = new List<string> { EMPLOYEE_ITN_DT, INCOME_ACCURED_DT, INCOME_DECLARED_DT, INCOME_SIGN_DT,
             DATE_ADOPT_DT, DATE_DISMISS_DT};

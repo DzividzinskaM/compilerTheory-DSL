@@ -82,12 +82,6 @@ namespace DSL
                 case DataTypes.DELETE_RECORD_METHOD:
                     lst = DataTypes.AttrsForDeleteRecord;
                     break;
-                case DataTypes.CLARIFY_ADD_NEW_RECORD_METHOD:
-                    lst = DataTypes.AttrsForClarifyAddNewRecord;
-                    break;
-                case DataTypes.CLARIFY_DELETE_RECORD_METHOD:
-                    lst = DataTypes.AttrsForClarifyDeleteRecord;
-                    break;
                 default: 
                     break;
             }
@@ -227,7 +221,8 @@ namespace DSL
             {
                 if (!checkPropForId(expr.keyWord, leftDT))
                     throw new Exception($"Property {expr.keyWord} isn't use for {leftDT}");
-                checkCorrectValueForType(expr.keyWord, expr.identifier);
+                if(expr.identifier != null)
+                    checkCorrectValueForType(expr.keyWord, expr.identifier);
             }
         }
 
@@ -393,17 +388,10 @@ namespace DSL
 
         private bool isCorrectFullName(string value)
         {
-            if (!isStrContainsOnlyLetter(value.Substring(1, value.Length-2)))
-                return false;
-            return true;
+            if (value.Contains(' '))
+                return true;
+            return false;
         }
 
-        private bool isStrContainsOnlyLetter(string value)
-        {
-            foreach (var sym in value)
-                if (!Char.IsLetter(sym))
-                    return false;
-            return true;
-        }
     }
 }
